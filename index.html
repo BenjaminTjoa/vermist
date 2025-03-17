@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Vermist - Wie Vergeet Jij?</title>
+	<link rel="icon" href="/images/ico.ico" type="image/x-icon">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VW6VDP8QXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VW6VDP8QXX');
+</script>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500&display=swap');
+		body, html {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+			background-color: #000000;
+			color: #ffffff;
+			overflow-x: hidden;
+		}
+		#login-screen {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			position: absolute;
+			width: 100%;
+			background-color: #000000;
+			z-index: 100;
+		}
+		#login-box {
+			background-color: rgba(28, 28, 30, 0.8);
+			padding: 40px;
+			border-radius: 18px;
+			box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			width: 300px;
+			height: 300px;
+			text-align: center;
+		}
+		#login-box h2 {
+			margin-bottom: 30px;
+			font-weight: 500;
+			font-size: 24px;
+		}
+		#login-box input {
+			display: block;
+			margin: 20px 0;
+			padding: 12px;
+			width: 100%;
+			background-color: rgba(118, 118, 128, 0.24);
+			border: none;
+			border-radius: 10px;
+			color: #ffffff;
+			font-size: 16px;
+			box-sizing: border-box;
+		}
+		#login-box input::placeholder {
+			color: #8e8e93;
+		}
+		#login-box button {
+			background-color: #0A84FF;
+			color: white;
+			padding: 12px 0;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+			width: 100%;
+			font-size: 16px;
+			font-weight: 500;
+			transition: background-color 0.3s ease;
+		}
+		#login-box button:hover {
+			background-color: #007AFF;
+		}
+		#rememberContainer {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			margin-top: 10px;
+		}
+		#rememberContainer input {
+			width: 16px;
+			height: 16px;
+		}
+		#message {
+			font-size: 14px;
+			color: #FF3B30;
+			margin-top: 10px;
+		}
+		#inspirational-message {
+			margin-top: 20px;
+			font-size: 16px;
+			text-align: center;
+		}
+		.rainbow-text {
+			font-weight: bold;
+			background: linear-gradient(90deg, #cb1333, #de45c1, #b96be2, #84a9e0, #23d43b, #d0bb08, #eb6d17);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			display: inline-block;
+		}
+		#welcome-screen {
+			display: none;
+			background-color: #000000;
+			color: #ffffff;
+			height: 100%;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.5rem;
+			text-align: center;
+			flex-direction: column;
+			padding: 20px;
+			position: absolute;
+			width: 100%;
+			z-index: 90;
+			overflow: hidden;
+		}
+		.container {
+			display: flex;
+			height: 100vh;
+		}
+		.left-side {
+			width: 75%;
+			padding: 20px;
+			box-sizing: border-box;
+			position: relative;
+			overflow-y: auto;
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+		}
+		.left-side::-webkit-scrollbar {
+			display: none;
+		}
+		.timer-container {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			z-index: 5;
+		}
+		#circleTimer {
+			width: 60px;
+			height: 60px;
+		}
+		#circleTimer text {
+			fill: #007AFF;
+			font-size: 16px;
+			dominant-baseline: middle;
+			text-anchor: middle;
+		}
+		.hint-button {
+			background-color: #AF52DE;
+			border: none;
+			color: white;
+			padding: 10px;
+			border-radius: 50%;
+			cursor: pointer;
+			font-size: 18px;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.name-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-top: 100px;
+		}
+		.name-card {
+			background-color: #1A1A1A;
+			padding: 10px;
+			border-radius: 5px;
+			text-align: center;
+			flex: 1 0 calc(25% - 10px);
+			min-width: 80px;
+		}
+		.input-bar {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 75%;
+			background-color: #000000;
+			border-top: 1px solid #444444;
+			padding: 10px 20px;
+			box-sizing: border-box;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+		.input-bar input {
+			width: 80%;
+			padding: 10px;
+			border: none;
+			border-radius: 25px;
+			font-size: 16px;
+		}
+		.input-bar button {
+			background-color: #007AFF;
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			font-size: 16px;
+			border-radius: 25px;
+			cursor: pointer;
+		}
+		.suggestions {
+			position: fixed;
+			bottom: 70px;
+			left: 20px;
+			width: calc(75% - 40px);
+			background-color: #222222;
+			border: 1px solid #444444;
+			border-radius: 5px;
+			max-height: 150px;
+			overflow-y: auto;
+			display: none;
+			z-index: 10;
+		}
+		.suggestion-item {
+			padding: 10px;
+			cursor: pointer;
+		}
+		.suggestion-item:hover {
+			background-color: #333333;
+		}
+		.result-message {
+			margin-top: 20px;
+			font-size: 20px;
+			font-weight: bold;
+			color: #FF3B30;
+			text-align: center;
+		}
+		.restart-button {
+			background-color: #007AFF;
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			font-size: 16px;
+			border-radius: 25px;
+			cursor: pointer;
+			margin-top: 10px;
+		}
+		.right-side {
+			width: 25%;
+			padding: 20px;
+			box-sizing: border-box;
+			border-left: 1px solid #444444;
+			overflow-y: auto;
+		}
+		.featured {
+			margin-bottom: 20px;
+		}
+		.featured .card {
+			background-color: #1A1A1A;
+			padding: 15px;
+			border-radius: 10px;
+			margin-bottom: 10px;
+			text-align: center;
+		}
+		.leaderboard h3 {
+			margin-bottom: 10px;
+			border-bottom: 1px solid #444444;
+			padding-bottom: 5px;
+		}
+		.leaderboard ol {
+			padding-left: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div id="login-screen">
+		<div id="login-box">
+			<h2>Inloggen</h2>
+			<input type="text" id="leerlingnummer" placeholder="Voer je leerlingnummer in">
+			<input type="password" id="wachtwoord" placeholder="Voer het wachtwoord in">
+			<button id="loginButton">Log in</button>
+			<div id="rememberContainer">
+				<input type="checkbox" id="rememberMe">
+				<label for="rememberMe">Onthoud mij voor 1 dag</label>
+			</div>
+			<p id="message"></p>
+		</div>
+		<div id="inspirational-message"></div>
+	</div>
+
+	<div id="welcome-screen">
+		<div id="welcome-message"></div>
+	</div>
+
+	<div id="game-container" style="display:none;">
+		<div class="container">
+			<div class="left-side">
+				<div class="timer-container">
+					<svg id="circleTimer" viewBox="0 0 100 100">
+						<circle cx="50" cy="50" r="45" stroke="#444444" stroke-width="8" fill="none" />
+						<circle id="progressCircle" cx="50" cy="50" r="45" stroke="#007AFF" stroke-width="8" fill="none" stroke-dasharray="282.6" stroke-dashoffset="0" transform="rotate(-90 50 50)" />
+						<text id="timerText" x="50" y="55">60</text>
+					</svg>
+					<button class="hint-button" id="hintButton" title="Geef een hint">
+						<i class="fa-solid fa-lightbulb"></i>
+					</button>
+				</div>
+				<div class="name-grid" id="nameGrid">
+				</div>
+				<div class="suggestions" id="suggestions"></div>
+				<div class="input-bar">
+					<input type="text" id="guessInput" placeholder="Typ hier de volledige naam van de vermiste leerling...">
+					<button onclick="submitGuess()">Verstuur</button>
+				</div>
+				<div class="result-message" id="resultMessage"></div>
+			</div>
+			<div class="right-side">
+				<div class="featured">
+					<div class="card" id="featuredPopular">
+						<h3>🔥 De Populaire Overwinnaar 🔥</h3>
+						<p>Wordt het meest geraden</p>
+						<p id="featuredPopularName">Naam</p>
+					</div>
+					<div class="card" id="featuredBest">
+						<h3>🏆 De Onbetwiste Kampioen 🏆</h3>
+						<p>Heeft de meeste potjes gewonnen</p>
+						<p id="featuredBestName">Naam</p>
+					</div>
+				</div>
+				<div class="leaderboard">
+					<h3>Top 3 Populair</h3>
+					<ol id="topPopular">
+					</ol>
+					<h3>Top 3 Beste</h3>
+					<ol id="topBest">
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="module">
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+		import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+		import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
+		const firebaseConfig = {
+			apiKey: "AIzaSyCI9v5oCduUYiPO3Fk7I4oGDV5yeKRWm1w",
+			authDomain: "vermist-benjamintjoa.firebaseapp.com",
+			databaseURL: "https://vermist-benjamintjoa-default-rtdb.europe-west1.firebasedatabase.app",
+			projectId: "vermist-benjamintjoa",
+			storageBucket: "vermist-benjamintjoa.firebasestorage.app",
+			messagingSenderId: "940569993490",
+			appId: "1:940569993490:web:a7d790c0c38f4d26de93cb",
+			measurementId: "G-83P86MTH6G"
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const analytics = getAnalytics(app);
+		const db = getDatabase(app);
+
+		let currentUser = null;
+		let allStudents = [];
+		let missingStudent = null;
+		let gameActive = false;
+		let hintUsed = false;
+		let countdown = 60;
+		let timerInterval;
+
+		const inspirationalMessages = [
+			"Ontdek de magie van dit spel!",
+			"Herinner je: niets is te vergeten.",
+			"Laat je geheugen spreken!"
+		];
+
+		function getRandomColor() {
+			const rand = Math.random();
+			if (rand < 0.48) return '#007AFF';
+			if (rand < 0.96) return '#FF2D55';
+			if (rand < 0.9989) return '#FFCC00';
+			if (rand < 0.999) return '#AF52DE';
+			return '#34C759';
+		}
+
+		function getRandomMessage(messages) {
+			const randomIndex = Math.floor(Math.random() * messages.length);
+			return messages[randomIndex];
+		}
+
+		function displayInspirationalMessage() {
+			const messageElement = document.getElementById('inspirational-message');
+			const message = getRandomMessage(inspirationalMessages);
+			const color = getRandomColor();
+			messageElement.textContent = message;
+			messageElement.style.color = color;
+		}
+
+		displayInspirationalMessage();
+
+		function setCookie(name, value, days) {
+			const expires = new Date(Date.now() + days * 864e5).toUTCString();
+			document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+		}
+
+		function getCookie(name) {
+			return document.cookie.split('; ').reduce((r, v) => {
+				const parts = v.split('=');
+				return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+			}, '');
+		}
+
+		window.addEventListener("load", () => {
+			const savedUser = getCookie("loggedInUser");
+			if (savedUser) {
+				autoLogin(savedUser);
+			}
+		});
+
+		function autoLogin(leerlingnummer) {
+			const userRef = ref(db, '2E/' + leerlingnummer);
+			get(userRef).then((snapshot) => {
+				if (snapshot.exists()) {
+					const leerling = snapshot.val();
+					const fullName = leerling.Voornaam + " " + leerling.Achternaam;
+					currentUser = {
+						id: leerlingnummer,
+						Voornaam: leerling.Voornaam,
+						Achternaam: leerling.Achternaam,
+						fullName: fullName,
+						PotjesGespeeld: leerling.PotjesGespeeld,
+						PotjesGewonnen: leerling.PotjesGewonnen,
+						Teller: leerling.Teller,
+						Geslacht: leerling.Geslacht
+					};
+					document.getElementById('login-screen').style.display = 'none';
+					showWelcomeScreen();
+				} else {
+					console.error("Geen gebruiker gevonden voor dit leerlingnummer.");
+				}
+			}).catch(error => {
+				console.error(error);
+			});
+		}
+
+		document.getElementById("loginButton").addEventListener("click", verifyUser);
+		document.addEventListener('keydown', (e) => {
+			const leerlingnummerField = document.getElementById('leerlingnummer');
+			const wachtwoordField = document.getElementById('wachtwoord');
+			if (e.key === 'Enter') {
+				if (document.activeElement === leerlingnummerField) {
+					wachtwoordField.focus();
+				} else if (document.activeElement === wachtwoordField) {
+					verifyUser();
+				}
+			}
+		});
+
+		function verifyUser() {
+			const leerlingnummer = document.getElementById('leerlingnummer').value.trim();
+			const wachtwoord = document.getElementById('wachtwoord').value.trim().toLowerCase();
+			const messageElement = document.getElementById('message');
+			if (!leerlingnummer || !wachtwoord) {
+				messageElement.textContent = "Vul beide velden in.";
+				return;
+			}
+			const userRef = ref(db, '2E/' + leerlingnummer);
+			get(userRef).then((snapshot) => {
+				if (snapshot.exists()) {
+					const leerling = snapshot.val();
+					const fullName = leerling.Voornaam + " " + leerling.Achternaam;
+					if (wachtwoord === "ecolle" || wachtwoord === leerlingnummer || wachtwoord === leerling.Voornaam.toLowerCase() || wachtwoord === leerling.Achternaam.toLowerCase() || wachtwoord === fullName.toLowerCase()) {
+						currentUser = {
+							id: leerlingnummer,
+							Voornaam: leerling.Voornaam,
+							Achternaam: leerling.Achternaam,
+							fullName: fullName,
+							PotjesGespeeld: leerling.PotjesGespeeld,
+							PotjesGewonnen: leerling.PotjesGewonnen,
+							Teller: leerling.Teller,
+							Geslacht: leerling.Geslacht
+						};
+						if (document.getElementById("rememberMe").checked) {
+							setCookie("loggedInUser", leerlingnummer, 1);
+						}
+						document.getElementById('login-screen').style.display = 'none';
+						showWelcomeScreen();
+					} else {
+						messageElement.textContent = "Onjuiste inloggegevens.";
+					}
+				} else {
+					messageElement.textContent = "Deze website is alleen voor leerlingen uit 2E.";
+				}
+			}).catch(error => {
+				console.error(error);
+				messageElement.textContent = "Er is een fout opgetreden.";
+			});
+		}
+
+		function typeWriter(text, element, index) {
+			if (index < text.length) {
+				element.innerHTML += text.charAt(index);
+				setTimeout(() => typeWriter(text, element, index + 1), 50);
+			} else {
+				setTimeout(() => {
+					document.getElementById('welcome-screen').style.display = 'none';
+					document.getElementById('game-container').style.display = 'block';
+					initializeGame();
+				}, 1000);
+			}
+		}
+
+		function showWelcomeScreen() {
+			const welcomeScreen = document.getElementById('welcome-screen');
+			const welcomeMessage = document.getElementById('welcome-message');
+			welcomeScreen.style.display = 'flex';
+			welcomeMessage.innerHTML = `Welkom <span class="rainbow-text">${currentUser.fullName}</span>!<br>`;
+			const typeText = `Wat mooi dat je Vermist.BenjaminTjoa.com gebruikt! ${getRandomMessage(inspirationalMessages)}`;
+			typeWriter(typeText, welcomeMessage, 0);
+		}
+
+		function initializeGame() {
+			gameActive = true;
+			const dbRefAll = ref(db, '2E');
+			get(dbRefAll).then((snapshot) => {
+				if (snapshot.exists()) {
+					const data = snapshot.val();
+					allStudents = Object.keys(data).map(key => ({
+						id: key,
+						Voornaam: data[key].Voornaam,
+						Achternaam: data[key].Achternaam,
+						fullName: data[key].Voornaam + " " + data[key].Achternaam,
+						PotjesGespeeld: data[key].PotjesGespeeld,
+						PotjesGewonnen: data[key].PotjesGewonnen,
+						Teller: data[key].Teller,
+						Geslacht: data[key].Geslacht
+					}));
+					const eligibleStudents = allStudents.filter(student => student.id !== currentUser.id);
+					if (eligibleStudents.length === 0) {
+						console.error("Geen andere leerlingen beschikbaar.");
+						return;
+					}
+					const randomIndex = Math.floor(Math.random() * eligibleStudents.length);
+					missingStudent = eligibleStudents[randomIndex];
+					updateStat(currentUser.id, "PotjesGespeeld", currentUser.PotjesGespeeld + 1);
+					currentUser.PotjesGespeeld++;
+					const gridStudents = allStudents.filter(student => student.id !== missingStudent.id);
+					shuffleArray(gridStudents);
+					displayNameGrid(gridStudents);
+					startTimer();
+					const guessInput = document.getElementById("guessInput");
+					guessInput.addEventListener("input", showSuggestions);
+					updateFeaturedAndLeaderboard();
+				} else {
+					console.error("Geen data beschikbaar in de database.");
+				}
+			}).catch(error => {
+				console.error(error);
+			});
+		}
+
+		function shuffleArray(array) {
+			for (let i = array.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[array[i], array[j]] = [array[j], array[i]];
+			}
+		}
+
+		function displayNameGrid(students) {
+			const grid = document.getElementById("nameGrid");
+			grid.innerHTML = "";
+			students.forEach(student => {
+				const div = document.createElement("div");
+				div.className = "name-card";
+				div.textContent = student.fullName;
+				grid.appendChild(div);
+			});
+		}
+
+		function startTimer() {
+			updateTimerDisplay();
+			timerInterval = setInterval(() => {
+				countdown--;
+				if (countdown <= 0) {
+					countdown = 0;
+					updateTimerDisplay();
+					clearInterval(timerInterval);
+					endGame(false);
+				} else {
+					updateTimerDisplay();
+				}
+			}, 1000);
+		}
+
+		function updateTimerDisplay() {
+			const timerText = document.getElementById("timerText");
+			timerText.textContent = countdown;
+			const progress = (60 - countdown) / 60;
+			const offset = progress * 282.6;
+			document.getElementById("progressCircle").setAttribute("stroke-dashoffset", offset);
+		}
+
+		document.getElementById("hintButton").addEventListener("click", () => {
+			if (hintUsed || !missingStudent) return;
+			hintUsed = true;
+			const hintLetter = getHintLetter();
+			alert(`Hint: Er zit geen "${hintLetter.toUpperCase()}" in zijn/haar naam.`);
+		});
+
+		function getHintLetter() {
+			const alphabet = "abcdefghijklmnopqrstuvwxyz";
+			const nameLower = missingStudent.fullName.toLowerCase();
+			const notInName = [];
+			for (let char of alphabet) {
+				if (!nameLower.includes(char)) {
+					notInName.push(char);
+				}
+			}
+			if (notInName.length === 0) return "?";
+			return notInName[Math.floor(Math.random() * notInName.length)];
+		}
+
+		function showSuggestions() {
+			const inputValue = document.getElementById("guessInput").value.toLowerCase();
+			const suggestionsDiv = document.getElementById("suggestions");
+			suggestionsDiv.innerHTML = "";
+			if (inputValue.length === 0) {
+				suggestionsDiv.style.display = "none";
+				return;
+			}
+			const matches = allStudents.filter(student => student.fullName.toLowerCase().includes(inputValue));
+			if (matches.length > 0) {
+				suggestionsDiv.style.display = "block";
+				matches.forEach(match => {
+					const div = document.createElement("div");
+					div.className = "suggestion-item";
+					div.textContent = match.fullName;
+					div.addEventListener("click", () => {
+						document.getElementById("guessInput").value = match.fullName;
+						suggestionsDiv.style.display = "none";
+						submitGuess();
+					});
+					suggestionsDiv.appendChild(div);
+				});
+			} else {
+				suggestionsDiv.style.display = "none";
+			}
+		}
+
+		function submitGuess() {
+			if (!gameActive) return;
+			const guess = document.getElementById("guessInput").value.trim();
+			disableInput();
+			clearInterval(timerInterval);
+			if (guess.toLowerCase() === missingStudent.fullName.toLowerCase()) {
+				updateStat(currentUser.id, "PotjesGewonnen", currentUser.PotjesGewonnen + 1);
+				currentUser.PotjesGewonnen++;
+				updateStat(missingStudent.id, "Teller", missingStudent.Teller + 1);
+				missingStudent.Teller++;
+				endGame(true);
+			} else {
+				endGame(false);
+			}
+		}
+
+		function updateStat(studentId, statField, newValue) {
+			const statRef = ref(db, '2E/' + studentId);
+			update(statRef, { [statField]: newValue }).catch(error => {
+				console.error("Fout bij updaten van stat:", error);
+			});
+		}
+
+		function getFailureMessage() {
+			let geslacht = missingStudent.Geslacht;
+			if (geslacht) {
+				geslacht = geslacht.trim().toLowerCase();
+			}
+			
+			let messages;
+			
+			if (geslacht === "man") {
+				messages = [
+					"🔥 Ik denk dat hij die persoonlijk neemt! 🔥",
+					"🔥 Ik denk dat hij die persoonlijk neemt! 2 🔥",
+					"Hoe kon je die nou vergeten?"
+				];
+			} else if (geslacht === "vrouw") {
+				messages = [
+					"🔥 Ik denk dat zij die persoonlijk neemt! 🔥",
+					"🔥 Ik denk dat zij die persoonlijk neemt! 2🔥",
+					"Hoe kon je die nou vergeten?"
+				];
+			} else {
+				messages = [
+					"🔥 Hoe kon je die nou vergeten? 🔥",
+					"🔥 Dat zou niemand als compliment vinden. 🔥",
+					"🔥 Oei, pijnlijk, deze persoon is nergens te vinden! 🔥",
+					"🔥 Wat een expose, iemand is echt zoek! 🔥",
+					"🔥 Het is best confronterend, maar deze persoon staat er niet bij! 🔥",
+					"🔥 Iemand mist wel een plekje in de lijst, ouch! 🔥",
+					"🔥 Dat is pijnlijk, want deze persoon is niet te vinden! 🔥",
+					"🔥 Zeg het maar niet, maar deze persoon is nergens! 🔥",
+					"🔥 Het lijkt erop dat ze zichzelf hebben geëxposeerd... door afwezig te zijn! 🔥",
+					"🔥 Deze afwezige laat de rest in de steek, pijnlijk genoeg! 🔥"
+				];
+			}
+			
+			let randomIndex = Math.floor(Math.random() * messages.length);
+			return messages[randomIndex];
+		}
+
+		function endGame(won) {
+			gameActive = false;
+			const resultDiv = document.getElementById("resultMessage");
+			if (won) {
+				resultDiv.innerHTML = `<p>Goed geraden! De vermiste leerling was: <span style="color:#007AFF">${missingStudent.fullName}</span></p>`;
+			} else {
+				resultDiv.innerHTML = `<p>${missingStudent.fullName}</p>
+					<p>${getFailureMessage()}</p>`;
+			}
+			const restartBtn = document.createElement("button");
+			restartBtn.className = "restart-button";
+			restartBtn.textContent = "Opnieuw";
+			restartBtn.addEventListener("click", restartGame);
+			resultDiv.appendChild(restartBtn);
+		}
+
+		function disableInput() {
+			document.getElementById("guessInput").disabled = true;
+			document.querySelector(".input-bar button").disabled = true;
+		}
+
+		function updateFeaturedAndLeaderboard() {
+			const popularSorted = [...allStudents].sort((a, b) => b.Teller - a.Teller);
+			const bestSorted = [...allStudents].sort((a, b) => b.PotjesGewonnen - a.PotjesGewonnen);
+			if (popularSorted.length > 0) {
+				document.getElementById("featuredPopularName").textContent = popularSorted[0].fullName;
+			}
+			if (bestSorted.length > 0) {
+				document.getElementById("featuredBestName").textContent = bestSorted[0].fullName;
+			}
+			const topPopularList = document.getElementById("topPopular");
+			topPopularList.innerHTML = "";
+			popularSorted.slice(0, 3).forEach(student => {
+				const li = document.createElement("li");
+				li.textContent = student.fullName + " (" + student.Teller + " punten)";
+				topPopularList.appendChild(li);
+			});
+			const topBestList = document.getElementById("topBest");
+			topBestList.innerHTML = "";
+			bestSorted.slice(0, 3).forEach(student => {
+				const li = document.createElement("li");
+				li.textContent = student.fullName + " (" + student.PotjesGewonnen + " gewonnen)";
+				topBestList.appendChild(li);
+			});
+		}
+
+		function restartGame() {
+			gameActive = true;
+			hintUsed = false;
+			countdown = 60;
+			document.getElementById("resultMessage").innerHTML = "";
+			document.getElementById("guessInput").disabled = false;
+			document.querySelector(".input-bar button").disabled = false;
+			document.getElementById("guessInput").value = "";
+			document.getElementById("suggestions").style.display = "none";
+			clearInterval(timerInterval);
+			const eligibleStudents = allStudents.filter(student => student.id !== currentUser.id);
+			if (eligibleStudents.length === 0) {
+				console.error("Geen andere leerlingen beschikbaar.");
+				return;
+			}
+			const randomIndex = Math.floor(Math.random() * eligibleStudents.length);
+			missingStudent = eligibleStudents[randomIndex];
+			updateStat(currentUser.id, "PotjesGespeeld", currentUser.PotjesGespeeld + 1);
+			currentUser.PotjesGespeeld++;
+			const gridStudents = allStudents.filter(student => student.id !== missingStudent.id);
+			shuffleArray(gridStudents);
+			displayNameGrid(gridStudents);
+			countdown = 60;
+			startTimer();
+			updateFeaturedAndLeaderboard();
+		}
+	</script>
+</body>
+</html>
