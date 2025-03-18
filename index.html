@@ -236,7 +236,7 @@
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			margin-left: 10px;
+			margin-left: 0px;
 			cursor: pointer;
 		}
 		.suggestions {
@@ -282,6 +282,9 @@
 			border-radius: 10px;
 			margin-bottom: 10px;
 			text-align: center;
+		}
+		.featured h3, .leaderboard h3 {
+			color: #007AFF;
 		}
 		.leaderboard h3 {
 			margin-bottom: 10px;
@@ -345,15 +348,15 @@
 						<p id="featuredPopularName">Naam</p>
 					</div>
 					<div class="card" id="featuredBest">
-						<h3>🏆 De Onbetwiste Kampioen 🏆</h3>
+						<h3>🏆 De Meedogenloze Kampioen 🏆</h3>
 						<p>Heeft de meeste potjes gewonnen</p>
 						<p id="featuredBestName">Naam</p>
 					</div>
 				</div>
 				<div class="leaderboard">
-					<h3>Top 3 Populair</h3>
+					<h3>Top 5 Populair</h3>
 					<ol id="topPopular"></ol>
-					<h3>Top 3 Beste</h3>
+					<h3>Top 5 Beste</h3>
 					<ol id="topBest"></ol>
 				</div>
 			</div>
@@ -391,10 +394,103 @@
 		let lastRestartTime = 0;
 
 		const inspirationalMessages = [
-			"Ontdek de magie van dit spel!",
-			"Herinner je: niets is te vergeten.",
-			"Laat je geheugen spreken!"
+			"Speel met precisie, win met meedogenloosheid.",
+			"Jouw geheugen, jouw kracht.",
+			"Elke zet brengt je dichter bij perfectie.",
+			"Onthouden is een kunst. Beheers het.",
+			"Een briljant geheugen begint hier.",
+			"Focus. Speel. Overwin.",
+			"Jouw geest, onbegrensd.",
+			"Het spel wacht op jouw genialiteit.",
+			"Eén gedachte, oneindige mogelijkheden.",
+			"Herinner, reageer, regeer.",
+			"Vernieuw je focus, verleg je grenzen.",
+			"Intuïtie en snelheid: een onverslaanbare combinatie.",
+			"Meedogenloos slim, altijd vooruit.",
+			"Perfectie is geen doel, maar een pad.",
+			"Verover het spel, overstijg jezelf.",
+			"Geheugen. Kracht. Controle.",
+			"Jouw precisie, jouw overwinning.",
+			"Slimmer spelen, slimmer winnen.",
+			"Denk als een meester, speel als een kampioen.",
+			"Elke klik, een stap vooruit.",
+			"Maak geen fouten, creëer mogelijkheden.",
+			"Je speelt niet zomaar, je domineert.",
+			"Het verschil tussen goed en geniaal? Jij.",
+			"Strategie zonder limiet.",
+			"Razendsnel en meedogenloos efficiënt.",
+			"Laat je geheugen schitteren.",
+			"Onthouden is winnen.",
+			"Elke seconde telt. Elke zet ook.",
+			"Durf je snelheid te testen.",
+			"Focus. Adem. Overwin.",
+			"Bliksemsnelle precisie.",
+			"Herinneren is macht.",
+			"Laat je brein spreken.",
+			"Jouw snelheid, jouw succes.",
+			"Geen toeval, alleen controle.",
+			"Het spel past zich aan jou aan.",
+			"Laat elke beweging tellen.",
+			"Grenzeloze intelligentie, grenzeloos spel.",
+			"Perfectie is de enige optie.",
+			"Snel denken. Snel handelen.",
+			"Jouw geheugen, jouw wapen.","Domineer het moment.",
+			"Niet zomaar een spel. Jouw uitdaging.",
+			"Geheugen is de sleutel tot overwinning.",
+			"Slimmer, sneller, sterker.",
+			"Briljante geesten herkennen geen grenzen.",
+			"Focus op het nu, domineer de toekomst.",
+			"De enige limiet is je snelheid.",
+			"Maak van je brein een supercomputer.",
+			"Iedere zet bepaalt de uitkomst.",
+			"Een legende begint hier.",
+			"Meedogenloos scherp, altijd voorbereid.",
+			"Laat geen enkele gedachte verloren gaan.",
+			"Razendsnelle strategie, ultieme controle.",
+			"Herinner meer. Denk sneller. Win groots.",
+			"Speel als een visionair.",
+			"Je geheugen is een meesterwerk.",
+			"Geen vertraging, geen twijfel, geen grenzen.",
+			"Creëer je eigen momentum.",
+			"Snelheid ontmoet strategie.",
+			"Herinner, focus, domineer.",
+			"Het spel evolueert met jou.",
+			"Een beweging met impact.",
+			"Briljant in eenvoud, ongeëvenaard in kracht.",
+			"Slimmer spelen dan ooit tevoren.",
+			"Innovatie begint bij geheugen.",
+			"De toekomst van gaming begint hier.",
+			"Gedachten die winnen.",
+			"Intuïtief, razendsnel, revolutionair.",
+			"Herinner als nooit tevoren.",
+			"Meester in geheugen, kampioen in strategie.",
+			"Elke seconde telt, elke zet is goud waard.",
+			"Meer dan een spel, een ervaring.",
+			"Bereik de top met onstuitbare focus.",
+			"Schitter met snelheid en precisie.",
+			"Je bent één klik verwijderd van perfectie.",
+			"Meedogenloos accuraat, ongeëvenaard slim.",
+			"Versterk je geheugen, verscherp je geest.",
+			"Elimineer twijfel, vergroot je kracht.",
+			"Geen vertraging. Geen fout. Pure controle.",
+			"Elke ronde een nieuw record.",
+			"Jouw geheugen, zonder grenzen.",
+			"Tijd is je bondgenoot. Gebruik het wijs.",
+			"Simpel, krachtig, onverslaanbaar.",
+			"Een spel dat je slimmer maakt.",
+			"Meester in snelheid en intelligentie.",
+			"Briljante eenvoud, grenzeloze impact.",
+			"Een ongeëvenaarde test van geheugen en precisie.",
+			"Verleg je grenzen, verbeter je spel.",
+			"De kunst van het onthouden, perfect uitgevoerd.",
+			"Durf de uitdaging aan te gaan.",
+			"Laat je geheugen domineren.",
+			"Snelheid, focus, overwinning.",
+			"Denk sneller dan je schaduw.",
+			"Jouw geheugen is legendarisch.",
+			"De toekomst van snelheid is hier."
 		];
+
 
 		function getRandomColor() {
 			const rand = Math.random();
@@ -438,6 +534,17 @@
 				autoLogin(savedUser);
 			}
 			document.getElementById("loginButton").addEventListener("click", verifyUser);
+
+			
+			setInterval(() => {
+				try {
+					if (userClass) {
+						refreshLeaderboard();
+					}
+				} catch (e) {
+					console.error("Error during leaderboard refresh:", e);
+				}
+			}, 1000);
 		});
 
 		async function autoLogin(leerlingnummer) {
@@ -702,6 +809,34 @@
 			});
 		}
 
+		function refreshLeaderboard() {
+			const dbRefAll = ref(db, userClass);
+			get(dbRefAll)
+			.then((snapshot) => {
+				if (snapshot.exists()) {
+					const data = snapshot.val();
+					let updatedStudents = Object.keys(data).map(key => ({
+						id: key,
+						Voornaam: data[key].Voornaam,
+						Achternaam: data[key].Achternaam,
+						fullName: data[key].Voornaam + " " + data[key].Achternaam,
+						PotjesGespeeld: data[key].PotjesGespeeld,
+						PotjesGewonnen: data[key].PotjesGewonnen,
+						Teller: data[key].Teller,
+						Geslacht: data[key].Geslacht
+					}));
+					allStudents = updatedStudents;
+					updateFeaturedAndLeaderboard();
+					console.log("Leaderboard refreshed at " + new Date().toLocaleTimeString());
+				} else {
+					console.error("Geen data beschikbaar in de database voor leaderboard refresh.");
+				}
+			})
+			.catch(error => {
+				console.error("Error during leaderboard refresh:", error);
+			});
+		}
+
 		function getFailureMessage() {
 			let geslacht = missingStudent.Geslacht;
 			if (geslacht) {
@@ -790,21 +925,21 @@
 			const popularSorted = [...allStudents].sort((a, b) => b.Teller - a.Teller);
 			const bestSorted = [...allStudents].sort((a, b) => b.PotjesGewonnen - a.PotjesGewonnen);
 			if (popularSorted.length > 0) {
-				document.getElementById("featuredPopularName").textContent = popularSorted[0].fullName;
+				document.getElementById("featuredPopularName").innerHTML = `<span class="rainbow-text">${popularSorted[0].fullName}</span>`;
 			}
 			if (bestSorted.length > 0) {
-				document.getElementById("featuredBestName").textContent = bestSorted[0].fullName;
+				document.getElementById("featuredBestName").innerHTML = `<span class="rainbow-text">${bestSorted[0].fullName}</span>`;
 			}
 			const topPopularList = document.getElementById("topPopular");
 			topPopularList.innerHTML = "";
-			popularSorted.slice(0, 3).forEach(student => {
+			popularSorted.slice(0,5).forEach(student => {
 				const li = document.createElement("li");
 				li.textContent = student.fullName + " (" + student.Teller + " punten)";
 				topPopularList.appendChild(li);
 			});
 			const topBestList = document.getElementById("topBest");
 			topBestList.innerHTML = "";
-			bestSorted.slice(0, 3).forEach(student => {
+			bestSorted.slice(0,5).forEach(student => {
 				const li = document.createElement("li");
 				li.textContent = student.fullName + " (" + student.PotjesGewonnen + " gewonnen)";
 				topBestList.appendChild(li);
@@ -836,6 +971,7 @@
 			countdown = 60;
 			startTimer();
 			updateFeaturedAndLeaderboard();
+			refreshLeaderboard();
 		}
 
 		function restartGameNew() {
