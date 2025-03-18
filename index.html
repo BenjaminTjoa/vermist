@@ -12,7 +12,6 @@
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-	
 	  gtag('config', 'G-VW6VDP8QXX');
 	</script>
 	<style>
@@ -128,6 +127,14 @@
 			z-index: 90;
 			overflow: hidden;
 		}
+		#welcome-screen::-webkit-scrollbar,
+		#welcome-message::-webkit-scrollbar {
+			display: none;
+		}
+		#welcome-message {
+			overflow: hidden;
+			max-height: 100%;
+		}
 		.container {
 			display: flex;
 			height: 100vh;
@@ -220,6 +227,18 @@
 			border-radius: 25px;
 			cursor: pointer;
 		}
+		#restartButton {
+			background-color: #FF9500;
+			border: none;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			margin-left: 10px;
+			cursor: pointer;
+		}
 		.suggestions {
 			position: fixed;
 			bottom: 70px;
@@ -246,16 +265,6 @@
 			font-weight: bold;
 			color: #FF3B30;
 			text-align: center;
-		}
-		.restart-button {
-			background-color: #007AFF;
-			border: none;
-			color: white;
-			padding: 10px 20px;
-			font-size: 16px;
-			border-radius: 25px;
-			cursor: pointer;
-			margin-top: 10px;
 		}
 		.right-side {
 			width: 25%;
@@ -317,12 +326,14 @@
 						<i class="fa-solid fa-lightbulb"></i>
 					</button>
 				</div>
-				<div class="name-grid" id="nameGrid">
-				</div>
+				<div class="name-grid" id="nameGrid"></div>
 				<div class="suggestions" id="suggestions"></div>
 				<div class="input-bar">
 					<input type="text" id="guessInput" placeholder="Typ hier de volledige naam van de vermiste leerling...">
 					<button onclick="submitGuess()">Verstuur</button>
+					<button id="restartButton" onclick="restartGameNew()">
+						<i class="fa-solid fa-arrow-rotate-right"></i>
+					</button>
 				</div>
 				<div class="result-message" id="resultMessage"></div>
 			</div>
@@ -341,11 +352,9 @@
 				</div>
 				<div class="leaderboard">
 					<h3>Top 3 Populair</h3>
-					<ol id="topPopular">
-					</ol>
+					<ol id="topPopular"></ol>
 					<h3>Top 3 Beste</h3>
-					<ol id="topBest">
-					</ol>
+					<ol id="topBest"></ol>
 				</div>
 			</div>
 		</div>
@@ -378,6 +387,8 @@
 		let hintUsed = false;
 		let countdown = 60;
 		let timerInterval;
+		let userClass = "";
+		let lastRestartTime = 0;
 
 		const inspirationalMessages = [
 			"Ontdek de magie van dit spel!",
@@ -426,61 +437,21 @@
 			if (savedUser) {
 				autoLogin(savedUser);
 			}
+			document.getElementById("loginButton").addEventListener("click", verifyUser);
 		});
 
-		function autoLogin(leerlingnummer) {
-			const userRef = ref(db, '2E/' + leerlingnummer);
-			get(userRef).then((snapshot) => {
-				if (snapshot.exists()) {
-					const leerling = snapshot.val();
-					const fullName = leerling.Voornaam + " " + leerling.Achternaam;
-					currentUser = {
-						id: leerlingnummer,
-						Voornaam: leerling.Voornaam,
-						Achternaam: leerling.Achternaam,
-						fullName: fullName,
-						PotjesGespeeld: leerling.PotjesGespeeld,
-						PotjesGewonnen: leerling.PotjesGewonnen,
-						Teller: leerling.Teller,
-						Geslacht: leerling.Geslacht
-					};
-					document.getElementById('login-screen').style.display = 'none';
-					showWelcomeScreen();
-				} else {
-					console.error("Geen gebruiker gevonden voor dit leerlingnummer.");
-				}
-			}).catch(error => {
-				console.error(error);
-			});
-		}
-
-		document.getElementById("loginButton").addEventListener("click", verifyUser);
-		document.addEventListener('keydown', (e) => {
-			const leerlingnummerField = document.getElementById('leerlingnummer');
-			const wachtwoordField = document.getElementById('wachtwoord');
-			if (e.key === 'Enter') {
-				if (document.activeElement === leerlingnummerField) {
-					wachtwoordField.focus();
-				} else if (document.activeElement === wachtwoordField) {
-					verifyUser();
-				}
-			}
-		});
-
-		function verifyUser() {
-			const leerlingnummer = document.getElementById('leerlingnummer').value.trim();
-			const wachtwoord = document.getElementById('wachtwoord').value.trim().toLowerCase();
-			const messageElement = document.getElementById('message');
-			if (!leerlingnummer || !wachtwoord) {
-				messageElement.textContent = "Vul beide velden in.";
-				return;
-			}
-			const userRef = ref(db, '2E/' + leerlingnummer);
-			get(userRef).then((snapshot) => {
-				if (snapshot.exists()) {
-					const leerling = snapshot.val();
-					const fullName = leerling.Voornaam + " " + leerling.Achternaam;
-					if (wachtwoord === "ecolle" || wachtwoord === leerlingnummer || wachtwoord === leerling.Voornaam.toLowerCase() || wachtwoord === leerling.Achternaam.toLowerCase() || wachtwoord === fullName.toLowerCase()) {
+		async function autoLogin(leerlingnummer) {
+			const classes = ['2E', '2G', '2B'];
+			let userFound = false;
+			for (const className of classes) {
+				const userRef = ref(db, className + '/' + leerlingnummer);
+				try {
+					const snapshot = await get(userRef);
+					if (snapshot.exists()) {
+						userFound = true;
+						userClass = className;
+						const leerling = snapshot.val();
+						const fullName = leerling.Voornaam + " " + leerling.Achternaam;
 						currentUser = {
 							id: leerlingnummer,
 							Voornaam: leerling.Voornaam,
@@ -491,21 +462,69 @@
 							Teller: leerling.Teller,
 							Geslacht: leerling.Geslacht
 						};
-						if (document.getElementById("rememberMe").checked) {
-							setCookie("loggedInUser", leerlingnummer, 1);
-						}
 						document.getElementById('login-screen').style.display = 'none';
 						showWelcomeScreen();
-					} else {
-						messageElement.textContent = "Onjuiste inloggegevens.";
+						break;
 					}
-				} else {
-					messageElement.textContent = "Deze website is alleen voor leerlingen uit 2E.";
+				} catch (error) {
+					console.error("Fout tijdens het zoeken naar de gebruiker:", error);
 				}
-			}).catch(error => {
-				console.error(error);
-				messageElement.textContent = "Er is een fout opgetreden.";
-			});
+			}
+			if (!userFound) {
+				console.error("Geen gebruiker gevonden voor dit leerlingnummer in 2E, 2G of 2B.");
+				alert("Er is geen gebruiker gevonden in 2E, 2G of 2B.");
+			}
+		}
+
+		async function verifyUser() {
+			const leerlingnummer = document.getElementById('leerlingnummer').value.trim();
+			const wachtwoord = document.getElementById('wachtwoord').value.trim().toLowerCase();
+			const messageElement = document.getElementById('message');
+			if (!leerlingnummer || !wachtwoord) {
+				messageElement.textContent = "Vul beide velden in.";
+				return;
+			}
+			const classes = ['2E', '2G', '2B'];
+			let userFound = false;
+			for (const className of classes) {
+				const userRef = ref(db, className + '/' + leerlingnummer);
+				try {
+					const snapshot = await get(userRef);
+					if (snapshot.exists()) {
+						const leerling = snapshot.val();
+						const fullName = leerling.Voornaam + " " + leerling.Achternaam;
+						if (wachtwoord === "ecolle" || wachtwoord === leerlingnummer || wachtwoord === leerling.Voornaam.toLowerCase() || wachtwoord === leerling.Achternaam.toLowerCase() || wachtwoord === fullName.toLowerCase()) {
+							userFound = true;
+							userClass = className;
+							currentUser = {
+								id: leerlingnummer,
+								Voornaam: leerling.Voornaam,
+								Achternaam: leerling.Achternaam,
+								fullName: fullName,
+								PotjesGespeeld: leerling.PotjesGespeeld,
+								PotjesGewonnen: leerling.PotjesGewonnen,
+								Teller: leerling.Teller,
+								Geslacht: leerling.Geslacht
+							};
+							if (document.getElementById("rememberMe").checked) {
+								setCookie("loggedInUser", leerlingnummer, 1);
+							}
+							document.getElementById('login-screen').style.display = 'none';
+							showWelcomeScreen();
+							break;
+						} else {
+							messageElement.textContent = "Onjuiste inloggegevens.";
+							userFound = true;
+							break;
+						}
+					}
+				} catch (error) {
+					console.error("Fout tijdens het inloggen:", error);
+				}
+			}
+			if (!userFound) {
+				messageElement.textContent = "Deze website is alleen voor leerlingen uit 2E, 2G of 2B.";
+			}
 		}
 
 		function typeWriter(text, element, index) {
@@ -532,7 +551,7 @@
 
 		function initializeGame() {
 			gameActive = true;
-			const dbRefAll = ref(db, '2E');
+			const dbRefAll = ref(db, userClass);
 			get(dbRefAll).then((snapshot) => {
 				if (snapshot.exists()) {
 					const data = snapshot.val();
@@ -674,11 +693,10 @@
 			}
 		}
 
-		// Maak submitGuess beschikbaar in de globale scope voor gebruik in onclick-attributen
 		window.submitGuess = submitGuess;
 
 		function updateStat(studentId, statField, newValue) {
-			const statRef = ref(db, '2E/' + studentId);
+			const statRef = ref(db, userClass + '/' + studentId);
 			update(statRef, { [statField]: newValue }).catch(error => {
 				console.error("Fout bij updaten van stat:", error);
 			});
@@ -689,9 +707,7 @@
 			if (geslacht) {
 				geslacht = geslacht.trim().toLowerCase();
 			}
-			
 			let messages;
-			
 			if (geslacht === "man") {
 				messages = [
 					"🔥 Ik denk dat hij die persoonlijk neemt! 🔥",
@@ -750,7 +766,6 @@
 					"🔥 Meedogenloos. 🔥"
 				];
 			}
-			
 			let randomIndex = Math.floor(Math.random() * messages.length);
 			return messages[randomIndex];
 		}
@@ -759,16 +774,11 @@
 			gameActive = false;
 			const resultDiv = document.getElementById("resultMessage");
 			if (won) {
-				resultDiv.innerHTML = `<p>Goed geraden! De vermiste leerling was: <span style="color:#007AFF">${missingStudent.fullName}</span></p>`;
+				resultDiv.innerHTML = `<p style="color:#007AFF">Goed geraden! De vermiste leerling was: <span style="color:#34C759">${missingStudent.fullName}</span></p>`;
 			} else {
 				resultDiv.innerHTML = `<p>${missingStudent.fullName}</p>
 					<p>${getFailureMessage()}</p>`;
 			}
-			const restartBtn = document.createElement("button");
-			restartBtn.className = "restart-button";
-			restartBtn.textContent = "Opnieuw";
-			restartBtn.addEventListener("click", restartGame);
-			resultDiv.appendChild(restartBtn);
 		}
 
 		function disableInput() {
@@ -827,6 +837,19 @@
 			startTimer();
 			updateFeaturedAndLeaderboard();
 		}
+
+		function restartGameNew() {
+			let now = Date.now();
+			if (now - lastRestartTime >= 10000) {
+				lastRestartTime = now;
+				document.getElementById("resultMessage").innerHTML = "";
+				restartGame();
+			} else {
+				alert("Niet zo snel! 😅");
+			}
+		}
+
+		window.restartGameNew = restartGameNew;
 	</script>
 </body>
 </html>
